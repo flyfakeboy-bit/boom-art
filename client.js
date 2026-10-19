@@ -65,12 +65,12 @@ window.__ModuleLoader__.load({
         desc4: '更长的拖尾，更密的火花。',
         desc5: '几乎铺满四周，拖尾拉得很长。',
         desc6: '超长拖尾、极高密度；会明显吃性能。',
-        confirmBody: '你真的要关闭这么好看的特效吗？',
-        confirmClose: '确定关闭',
-        confirmOops: '我点错了',
-        closing: '好吧……',
+        confirmBody: '你真的要关闭这个非常帅气超级酷炫究极无敌吊炸天的特效吗？',
+        confirmClose: '（一脚踹飞）',
+        confirmOops: '哦当然不，我非常想要留住这个非常帅气超级酷炫究极无敌吊炸天的特效',
+        closing: '（倒地不起）',
         oops: '我就知道！🥳',
-        welcome: '你果然回来了！🥳',
+        welcome: '（瞬间原地复活）你果然回来了！🥳',
         max: 'MAX',
       },
       en: {
@@ -95,12 +95,12 @@ window.__ModuleLoader__.load({
         desc4: 'Longer trails and denser sparks.',
         desc5: 'Almost fills the frame, with very long trails.',
         desc6: 'Extreme trails and density; will cost performance.',
-        confirmBody: 'Are you really sure you want to turn off something this pretty?',
-        confirmClose: 'Turn it off',
-        confirmOops: 'I clicked the wrong thing',
-        closing: 'Okay…',
+        confirmBody: 'Are you really sure you want to turn off this incredibly handsome, super cool, ultimate, invincible, absolutely insane firework?',
+        confirmClose: '(kick it flying)',
+        confirmOops: 'Oh of course not, I really want to keep this incredibly handsome, super cool, ultimate, invincible, absolutely insane firework',
+        closing: '(knocked out)',
         oops: 'I knew it! 🥳',
-        welcome: 'You came back! 🥳',
+        welcome: '(instantly revived) You came back! 🥳',
         max: 'MAX',
       },
     };
@@ -163,8 +163,8 @@ window.__ModuleLoader__.load({
 .dsh-fw-modal{box-sizing:border-box;width:min(368px,calc(100vw - 32px));padding:23px 22px 19px;border:1px solid var(--dsw-alias-border-l1);border-radius:19px;background:var(--dsw-alias-bg-overlay);color:var(--dsw-alias-label-primary);box-shadow:0 24px 70px rgba(0,0,0,.32);text-align:center;animation:dsh-fw-modal-in .18s cubic-bezier(.2,.9,.2,1) both}
 @keyframes dsh-fw-modal-in{from{opacity:0;transform:translateY(8px) scale(.975)}to{opacity:1;transform:none}}
 .dsh-fw-modal-text{margin:0;font-size:16px;font-weight:700;line-height:25px;letter-spacing:.01em}
-.dsh-fw-modal-actions{display:flex;gap:9px;margin-top:20px}
-.dsh-fw-btn{box-sizing:border-box;flex:1;height:38px;padding:0 12px;border:1px solid var(--dsw-alias-border-l1);border-radius:10px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:650 12px/1 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;cursor:pointer}
+.dsh-fw-modal-actions{display:flex;flex-direction:column;gap:9px;margin-top:20px}
+.dsh-fw-btn{box-sizing:border-box;flex:none;width:100%;min-height:38px;padding:9px 12px;border:1px solid var(--dsw-alias-border-l1);border-radius:10px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:650 12px/1.45 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;cursor:pointer;white-space:normal;overflow-wrap:anywhere}
 .dsh-fw-btn:hover{background:var(--dsw-alias-bg-layer-2)}
 .dsh-fw-btn:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:2px}
 .dsh-fw-btn[data-danger="true"]{border-color:var(--dsw-alias-state-error-primary);color:var(--dsw-alias-state-error-primary)}
@@ -447,14 +447,14 @@ window.__ModuleLoader__.load({
         for (let index = 0; index < shockCount; index += 1) {
           this.shocks.push({
             rect: bounds,
-            start: start + index * 95,
-            duration: 920 + index * 210 + (cfg.id === 6 ? 360 : 0),
-            maxExpand: cfg.reach * (0.76 + index * 0.26),
+            start: start + index * 80,
+            duration: 560 + index * 150 + (cfg.id === 6 ? 140 : 0),
+            maxExpand: cfg.reach * (0.62 + index * 0.24),
             color: index === 0
               ? (dark ? '#fff3c4' : '#d61f4a')
               : palette[index % palette.length],
-            width: index === 0 ? 1.45 : 0.9,
-            alpha: 0.58 - index * 0.13,
+            width: index === 0 ? 1.8 : 1.2,
+            alpha: 0.62 - index * 0.12,
           });
         }
         this.launchCorona(bounds, cfg, palette, start);
@@ -677,14 +677,13 @@ window.__ModuleLoader__.load({
           const age = (now - shock.start) / shock.duration;
           if (age < 0 || age > 1.18) continue;
           const progress = clamp(age, 0, 1);
-          const ease = 1 - Math.pow(1 - progress, 2.25);
+          const ease = 1 - Math.pow(1 - progress, 3);
           const expand = 2 + shock.maxExpand * ease;
           const rect = shock.rect;
           const alpha = (1 - progress) * shock.alpha;
+          if (alpha < 0.015) continue;
           ctx.save();
-          ctx.globalAlpha = alpha;
-          ctx.strokeStyle = shock.color;
-          ctx.lineWidth = shock.width;
+          ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
           pathRoundRect(
             ctx,
@@ -694,10 +693,12 @@ window.__ModuleLoader__.load({
             rect.height + expand * 2,
             (rect.radius || 16) + expand,
           );
+          ctx.globalAlpha = alpha * 0.18;
+          ctx.strokeStyle = shock.color;
+          ctx.lineWidth = shock.width * 2.4;
           ctx.stroke();
-          ctx.globalAlpha = alpha * 0.5;
-          ctx.strokeStyle = this.dark ? '#fff7d6' : '#111827';
-          ctx.lineWidth = shock.width * 0.45;
+          ctx.globalAlpha = alpha;
+          ctx.lineWidth = shock.width;
           ctx.stroke();
           ctx.restore();
         }
@@ -1060,7 +1061,7 @@ window.__ModuleLoader__.load({
               'div',
               { className: 'dsh-fw-title-row' },
               h('h2', { className: 'dsh-fw-title' }, t('title')),
-              h('span', { className: 'dsh-fw-version' }, 'v8.0'),
+              h('span', { className: 'dsh-fw-version' }, 'v88.8'),
             ),
           ),
           h(
