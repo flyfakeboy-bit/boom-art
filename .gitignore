@@ -1,0 +1,7 @@
+node_modules/
+.verify/
+*.log
+.dsh-ops-update-*.lock
+*.tgz
+.DS_Store
+Thumbs.db

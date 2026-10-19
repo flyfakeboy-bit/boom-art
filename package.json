@@ -1,0 +1,33 @@
+{
+  "name": "@local/boom-art",
+  "version": "8.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Boom Art！——以输入框为爆心、只向边界外绽放的发送烟花：径向斜角、LED 亮边、清晰拖尾、随机 emoji、同句重复文字、六档强度与带确认的开关。",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  }
+}
