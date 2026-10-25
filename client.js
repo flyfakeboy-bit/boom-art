@@ -786,30 +786,8 @@ window.__ModuleLoader__.load({
       return useSync(subscribeUI, getUI, getUI);
     }
 
-    function useTranslate(ctx) {
-      const [, setRevision] = useState(0);
-      useEffect(() => {
-        let locale;
-        try {
-          locale = ctx.get('locale');
-        } catch (_error) {}
-        if (!locale || typeof locale.subscribe !== 'function') return undefined;
-        return locale.subscribe(() => setRevision((value) => value + 1));
-      }, [ctx]);
-      let locale;
-      try {
-        locale = ctx.get('locale');
-      } catch (_error) {}
-      if (locale && typeof locale.bind === 'function') {
-        try {
-          const translate = locale.bind('boom-art');
-          return (key) => {
-            const value = translate(key);
-            return value === key ? (DICTS.zh[key] || DICTS.en[key] || key) : value;
-          };
-        } catch (_error) {}
-      }
-      return (key) => (DICTS.zh[key] || DICTS.en[key] || key);
+    function useTranslate() {
+      return (key) => DICTS.zh[key] || key;
     }
 
     function useDarkTheme(ctx) {
