@@ -105,6 +105,11 @@ window.__ModuleLoader__.load({
       },
     };
 
+    const LOCALE_ALIASES = {
+      zh: ['zh', 'zh-CN', 'zh-Hans', 'zh-Hant', 'zh-TW', 'zh-HK'],
+      en: ['en', 'en-US', 'en-GB', 'en-AU', 'en-CA'],
+    };
+
     const CSS = `
 .dsh-fw-root{position:fixed;inset:0;z-index:2147483000;pointer-events:none;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
 .dsh-fw-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block}
@@ -797,7 +802,11 @@ window.__ModuleLoader__.load({
       } catch (_error) {}
       if (locale && typeof locale.bind === 'function') {
         try {
-          return locale.bind('boom-art');
+          const translate = locale.bind('boom-art');
+          return (key) => {
+            const value = translate(key);
+            return value === key ? (DICTS.zh[key] || DICTS.en[key] || key) : value;
+          };
         } catch (_error) {}
       }
       return (key) => (DICTS.zh[key] || DICTS.en[key] || key);
@@ -1285,9 +1294,12 @@ window.__ModuleLoader__.load({
       if (!locale || typeof locale.register !== 'function') return undefined;
       const disposers = [];
       for (const id of Object.keys(DICTS)) {
-        try {
-          disposers.push(locale.register('boom-art', id, DICTS[id]));
-        } catch (_error) {}
+        const tags = LOCALE_ALIASES[id] || [id];
+        for (const tag of tags) {
+          try {
+            disposers.push(locale.register('boom-art', tag, DICTS[id]));
+          } catch (_error) {}
+        }
       }
       return () => {
         for (const dispose of disposers) {
